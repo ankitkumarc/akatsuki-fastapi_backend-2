@@ -7,7 +7,7 @@ from beanie import Document, Indexed
 
 class DiscountType(str, Enum):
     percentage = 'percentage'
-    fixed_amount = 'fixed_amount'
+    exact = 'exact'
 
 class Coupon(Document):
     class Settings:
@@ -17,10 +17,11 @@ class Coupon(Document):
     coupon_code: str = Indexed(unique=True)
     description: str
     discount_type: DiscountType
-    coupon_amount: float 
+    coupon_amount: float
     expiry_date: datetime
     prev_purchase_amount: float
     visit_frequency: int
+    min_purchase_val: float
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 

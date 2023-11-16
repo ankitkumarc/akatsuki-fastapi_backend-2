@@ -29,8 +29,7 @@ async def app_init():
     Initialize crucial application services
     """
     
-    db_client = AsyncIOMotorClient(settings.MONGO_CONNECTION_STRING).retailsense
-
+    db_client = AsyncIOMotorClient(settings.MONGO_CONNECTION_STRING, tls=True, tlsAllowInvalidCertificates=True).retailsense
     await init_beanie(
         database=db_client,
         document_models=[
