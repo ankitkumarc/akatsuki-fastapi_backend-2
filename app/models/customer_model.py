@@ -4,20 +4,23 @@ from datetime import datetime
 from uuid import UUID, uuid4
 from beanie import Document, Indexed, Link, before_event, Replace, Insert
 from .retailer_model import User
-
+from enum import Enum
+class Gender(str, Enum):
+    male = 'male'
+    female = 'female'
 class Customer(Document):
-
     class Settings:
-        collection = 'customers' 
-
+        collection = 'customers'
     customer_id: UUID = Field(default_factory=uuid4, unique=True)
     phone_number: str = Indexed(unique=True)
     first_name: str
     last_name: str
     email: str = Indexed(unique=True)
-    bill_amount: str
+    bill_amount: float
     address: str
     feedback: str
+    gender : Gender
+    age: int
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     # owner: Link[User]

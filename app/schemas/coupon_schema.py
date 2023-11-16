@@ -16,6 +16,7 @@ class CouponCreate(BaseModel):
     expiry_date: datetime
     prev_purchase_amount: float 
     visit_frequency: int
+    min_purchase_val: float
 
 
 class CouponUpdate(BaseModel):
@@ -26,6 +27,7 @@ class CouponUpdate(BaseModel):
     expiry_date: Optional[datetime]
     prev_purchase_amount: Optional[float]
     visit_frequency: Optional[int]
+    min_purchase_val: Optional[float]
 
 class CouponOut(BaseModel):
     coupon_id: UUID
@@ -36,5 +38,6 @@ class CouponOut(BaseModel):
     expiry_date: datetime
     prev_purchase_amount: float 
     visit_frequency: int
+    min_purchase_val: float
     created_at: datetime
     updated_at: datetime

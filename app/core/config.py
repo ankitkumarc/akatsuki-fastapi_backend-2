@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     
     # Database
     MONGO_CONNECTION_STRING: str = config("MONGODB_URI", cast=str)
-    
+    print(config("MONGODB_URI", cast=str))
     class Config:
         case_sensitive = True
         
