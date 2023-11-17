@@ -17,7 +17,7 @@ class CustomerService:
     async def create_customer( data: CustomerCreate) -> Customer:
         existing_customer = await Customer.find_one(Customer.phone_number==data.phone_number)
         if existing_customer:
-             raise ValueError("Customer with this phone already exists")
+            raise HTTPException(status_code=statistics.HTTP_, detail="Customer with this phone already exists")
         
         customer = Customer(**data.dict())
         return await customer.insert()
@@ -41,9 +41,12 @@ class CustomerService:
 
     
     @staticmethod
-    async def update_customer(customer_id:UUID, data: CustomerUpdate):
-        customer = await CustomerService.retrieve_customer( customer_id)
+    async def update_customer(customer_id: UUID, data: CustomerUpdate):
+        customer = await CustomerService.retrieve_customer(customer_id)
         if customer:
+            customer.bill_amount+=data.bill_amount
+            if(data.bill_amount>0.0):
+                customer.visit_frequency+=1
             await customer.update({"$set": data.dict(exclude_unset=True)})
             await customer.save()
             return customer

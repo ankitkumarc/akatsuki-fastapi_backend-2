@@ -9,9 +9,9 @@ from typing import List
 
 coupon_router = APIRouter()
 
-@coupon_router.get("/", response_model=List[CouponOut])
-async def list_coupons():
-    return await CouponService.list_coupons()
+@coupon_router.get("/{customer_id}", response_model=List[CouponOut])
+async def list_coupons(customer_id: UUID):
+    return await CouponService.list_coupons(customer_id)
 
 @coupon_router.post("/", response_model=CouponOut)
 async def create_coupon(data: CouponCreate):
