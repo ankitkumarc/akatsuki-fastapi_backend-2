@@ -16,7 +16,8 @@ class Customer(Document):
     first_name: str
     last_name: str
     email: str = Indexed(unique=True)
-    bill_amount: float
+    total_bill_amount: float
+    vist_frequency: int
     address: str
     feedback: str
     gender : Gender

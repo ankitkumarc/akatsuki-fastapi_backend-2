@@ -8,6 +8,7 @@ from app.models.coupon_model import Coupon
 from app.core.config import settings
 from app.api.api_v1.router import router 
 from app.models.purchase_model import Purchase
+from app.models.setup_model import Setup
 
 
 app = FastAPI(
@@ -33,10 +34,11 @@ async def app_init():
     await init_beanie(
         database=db_client,
         document_models=[
-            User,
             Customer,
             Coupon,
-            Purchase
+            Purchase,
+            User,
+            Setup,
         ]
     )
 

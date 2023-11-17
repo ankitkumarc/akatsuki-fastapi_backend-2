@@ -15,7 +15,8 @@ class CustomerCreate(BaseModel):
     first_name: str = Field(..., description="Customer first name")
     last_name: str = Field(..., description="Customer last name")
     email: EmailStr = Field(..., description="Customer email")
-    bill_amount: float = Field(..., description="Customer bill amount")
+    total_bill_amount: float = Field(..., description="Customer bill amount")
+    visit_frequency: int = Field(..., description="Customer visit frequency")
     address: str = Field(..., description="Customer address")
     feedback: str = Field(None, description="Customer feedback")
     age: int = Field(...,description="Age of Customer")
@@ -26,7 +27,8 @@ class CustomerUpdate(BaseModel):
     first_name: Optional[str] = Field(..., description="Customer first name")
     last_name: Optional[str] = Field(..., description="Customer last name")
     email: Optional[EmailStr] = Field(..., description="Customer email")
-    bill_amount: Optional[float] = Field(None, description="Customer bill amount")
+    total_bill_amount: Optional[float] = Field(default=0.0, description="Customer bill amount")
+    visit_frequency: Optional[int] = Field(default=0.0, description="Customer visit frequency")
     address: Optional[str] = Field(..., description="Customer address")
     feedback: Optional[str] = Field(None, description="Customer feedback")
     age: int = Field(..., description="Age of Customer")
@@ -39,7 +41,8 @@ class CustomerOut(BaseModel):
     first_name: str 
     last_name: str 
     email: EmailStr 
-    bill_amount: float
+    total_bill_amount: float
+    visit_frequency: int
     address: str 
     feedback:str
     created_at: datetime
