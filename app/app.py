@@ -44,4 +44,3 @@ async def app_init():
 
 
 app.include_router(router, prefix=settings.API_V1_STR)
-

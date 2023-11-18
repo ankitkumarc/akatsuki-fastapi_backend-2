@@ -5,9 +5,11 @@ from uuid import UUID, uuid4
 from beanie import Document, Indexed, Link, before_event, Replace, Insert
 from .retailer_model import User
 from enum import Enum
+
 class Gender(str, Enum):
     male = 'male'
     female = 'female'
+
 class Customer(Document):
     class Settings:
         collection = 'customers'
@@ -17,7 +19,7 @@ class Customer(Document):
     last_name: str
     email: str = Indexed(unique=True)
     total_bill_amount: float
-    vist_frequency: int
+    visit_frequency: int
     address: str
     feedback: str
     gender : Gender
@@ -33,6 +35,7 @@ class Customer(Document):
         if isinstance(other, Customer):
             return self.customer_id == other.customer_id
         return False
+    
     @before_event([Replace, Insert])
     def update_update_at(self):
         self.updated_at = datetime.utcnow()
