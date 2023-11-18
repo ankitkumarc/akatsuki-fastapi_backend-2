@@ -28,7 +28,7 @@ class CustomerUpdate(BaseModel):
     last_name: Optional[str] = Field(..., description="Customer last name")
     email: Optional[EmailStr] = Field(..., description="Customer email")
     total_bill_amount: Optional[float] = Field(default=0.0, description="Customer bill amount")
-    visit_frequency: Optional[int] = Field(default=0.0, description="Customer visit frequency")
+    visit_frequency: Optional[int] = Field(default=1, description="Customer visit frequency")
     address: Optional[str] = Field(..., description="Customer address")
     feedback: Optional[str] = Field(None, description="Customer feedback")
     age: int = Field(..., description="Age of Customer")

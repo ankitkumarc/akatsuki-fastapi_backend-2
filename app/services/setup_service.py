@@ -5,6 +5,7 @@ from typing import List
 import json
 from fastapi import HTTPException, status
 import ast
+from fastapi import UploadFile, File 
 
  # File path to store setups
 file_path = "Store_Setup.json"
@@ -45,10 +46,22 @@ print(setup_storage)
 
 
 class SetupService:
-   
+    @staticmethod
+    async def get_cameras(setup_id: UUID) -> List[SetupCameraSchema]:
+        load_setups_from_file()
+        if setup_id not in setup_storage:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Setup not found",
+            )
+
+        setup = setup_storage[setup_id]
+        return setup.camera_zones
+
     @staticmethod
     async def create_setup(setup_data: SetupSchema) -> Setup:
     # Check for duplicate data based on shop_name
+        load_setups_from_file()
         existing_setup = next(
             (setup for setup in setup_storage.values() if isinstance(setup, Setup) and setup.shop_name == setup_data.shop_name),
             None
@@ -60,14 +73,16 @@ class SetupService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Setup with the same shop_name already exists",
             )
-
+        
         new_setup = Setup(**setup_data.dict())
+        print(new_setup)
         setup_storage[new_setup.setup_id] = new_setup
         save_setups_to_file(setup_storage)
         return new_setup
         
     @staticmethod
     async def create_camera(setup_id: UUID, camera_zone: SetupCameraSchema) -> Setup:
+        load_setups_from_file()
         if setup_id not in setup_storage:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -87,10 +102,10 @@ class SetupService:
         setup.camera_zones.append(new_camera)
         save_setups_to_file(setup_storage)
         return setup
-
         
     @staticmethod
     async def update_camera(setup_id: UUID, zone_name: str, camera_zone: SetupCameraSchema) -> Setup:
+        load_setups_from_file()
         if setup_id not in setup_storage:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -106,12 +121,19 @@ class SetupService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Camera zone not found in the setup",
             )
-
-        existing_camera= camera_zone
+        print(existing_camera)
+        print(camera_zone)
+        existing_camera = camera_zone
+        for i, c in enumerate(setup_storage[setup_id].camera_zones):
+            if c.zone_name == zone_name:
+                setup_storage[setup_id].camera_zones[i] = existing_camera
+        
         save_setups_to_file(setup_storage)
         return setup
+    
     @staticmethod
     async def delete_camera(setup_id: UUID, zone_name: str) -> Setup:
+        load_setups_from_file()
         if setup_id not in setup_storage:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -134,19 +156,21 @@ class SetupService:
     
     @staticmethod
     async def update_setup(setup_id: UUID, setup: Setup) -> Setup:
+        load_setups_from_file()
         if setup_id not in setup_storage:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Setup not found",
             )
         new_setup = Setup(**setup.dict())
-        setup_storage[new_setup.setup_id] = new_setup
+        setup_storage[setup.setup_id] = new_setup
         save_setups_to_file(setup_storage)
         return setup
 
 
     @staticmethod
     async def delete_setup(setup_id: UUID) -> None:
+        load_setups_from_file()
         if setup_id not in setup_storage:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -159,6 +183,7 @@ class SetupService:
     
     @staticmethod
     async def get_setup_by_id(setup_id: UUID) -> Setup:
+        load_setups_from_file() 
         if setup_id not in setup_storage:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -169,4 +194,5 @@ class SetupService:
     
     @staticmethod
     async def list_setups() -> List[Setup]:
+        load_setups_from_file()
         return list(setup_storage.values())

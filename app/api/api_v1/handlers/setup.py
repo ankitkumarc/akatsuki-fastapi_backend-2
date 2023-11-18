@@ -2,12 +2,15 @@ from fastapi import APIRouter
 from app.services.setup_service import SetupService
 from app.schemas.setup_schema import SetupSchema, SetupCameraSchema
 from uuid import UUID
+from fastapi import UploadFile, File
+from fastapi import Depends
 
 setup_router = APIRouter()
 
 @setup_router.post('/', summary="Create Setup")
 async def create_setup(data: SetupSchema):
-    return await SetupService.create_setup(data)
+    new_setup = await SetupService.create_setup(data)
+    return {"message": "Setup created successfully", "setup": new_setup}
 
 @setup_router.put("/update_setup/{setup_id}")
 async def update_setup(setup_id: UUID, data: SetupSchema):
@@ -21,6 +24,10 @@ async def delete_setup(setup_id: UUID):
 @setup_router.post('/{setup_id}/camera', summary="Add Camera Zone")
 async def add_camera_zone(setup_id: UUID, camera_zone: SetupCameraSchema):
     return await SetupService.create_camera(setup_id, camera_zone)
+
+@setup_router.get('/{setup_id}/cameras', summary="Get Setups")
+async def get_cameras(setup_id: UUID):
+    return await SetupService.get_cameras(setup_id)
 
 @setup_router.put('/{setup_id}/camera/{zone_name}', summary="Update Camera Zone")
 async def update_camera_zone(setup_id: UUID, zone_name: str, camera_zone: SetupCameraSchema):

@@ -10,14 +10,18 @@ from typing import List
 coupon_router = APIRouter()
 
 @coupon_router.get("/{customer_id}", response_model=List[CouponOut])
-async def list_coupons(customer_id: UUID):
-    return await CouponService.list_coupons(customer_id)
+async def list_valid_coupons(customer_id: UUID):
+    return await CouponService.list_valid_coupons(customer_id)
+
+@coupon_router.get("/", response_model=List[CouponOut])
+async def list_coupons():
+    return await CouponService.list_coupons()
 
 @coupon_router.post("/", response_model=CouponOut)
 async def create_coupon(data: CouponCreate):
     return await CouponService.create_coupon(data)
 
-@coupon_router.get("/{coupon_id}", response_model=CouponOut)
+@coupon_router.get("/retrive/{coupon_id}", response_model=CouponOut)
 async def retrieve_coupon(coupon_id: UUID):
     return await CouponService.retrieve_coupon(coupon_id)
 
