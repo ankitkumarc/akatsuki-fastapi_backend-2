@@ -27,10 +27,11 @@ def load_setups_from_file() -> dict:
         return {}
 
 # Function to save setups to file
-def save_setups_to_file(setups):
+def save_setups_to_file(setups : SetupSchema):
     with open("Store_Setup.json", "w") as file:
         if setups:
             setups_str_keys = {str(key): value for key, value in setups.items()}
+            print(setups_str_keys)
             # Serialize the dictionary to JSON
             setups_json = json.dumps(setups_str_keys, default=str, indent=2)
             # Write the JSON data to the file
@@ -47,110 +48,84 @@ print(setup_storage)
 
 class SetupService:
     @staticmethod
-    async def get_cameras(setup_id: UUID) -> List[SetupCameraSchema]:
+    async def get_cameras() -> List[SetupCameraSchema]:
         load_setups_from_file()
-        if setup_id not in setup_storage:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Setup not found",
-            )
-
-        setup = setup_storage[setup_id]
-        return setup.camera_zones
+        # if setup_id not in setup_storage:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_404_NOT_FOUND,
+        #         detail="Setup not found",
+        #     )
+        setup = setup_storage
+        return setup['camera_zones']
 
     @staticmethod
     async def create_setup(setup_data: SetupSchema) -> Setup:
-    # Check for duplicate data based on shop_name
         load_setups_from_file()
-        existing_setup = next(
-            (setup for setup in setup_storage.values() if isinstance(setup, Setup) and setup.shop_name == setup_data.shop_name),
-            None
-        )
-
-        if existing_setup:
-            # Handle duplicate data, for example, you can raise an HTTPException
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Setup with the same shop_name already exists",
-            )
-        
-        new_setup = Setup(**setup_data.dict())
+        new_setup = {**setup_data.dict()}
         print(new_setup)
-        setup_storage[new_setup.setup_id] = new_setup
-        save_setups_to_file(setup_storage)
+        save_setups_to_file(new_setup)
         return new_setup
         
     @staticmethod
-    async def create_camera(setup_id: UUID, camera_zone: SetupCameraSchema) -> Setup:
+    async def create_camera(camera_zone: SetupCameraSchema) -> Setup:
         load_setups_from_file()
-        if setup_id not in setup_storage:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Setup not found",
-            )
+        # if setup_id not in setup_storage:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_404_NOT_FOUND,
+        #         detail="Setup not found",
+        #     )
 
-        setup = setup_storage[setup_id]
+        setup = setup_storage
 
         # Check if the camera already exists in the setup
-        if any(existing_camera.zone_name == camera_zone.zone_name for existing_camera in setup.camera_zones):
+        if any(existing_camera['zone_name'] == camera_zone.zone_name for existing_camera in setup['camera_zones']):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Camera zone with the same name already exists in the setup",
             )
 
-        new_camera = SetupCameraSchema(**camera_zone.dict())  # Use SetupCamera, not Setup
-        setup.camera_zones.append(new_camera)
+        new_camera = {**camera_zone.dict()}  # Use SetupCamera, not Setup
+        
+        setup['camera_zones'].append(new_camera)
         save_setups_to_file(setup_storage)
         return setup
         
     @staticmethod
-    async def update_camera(setup_id: UUID, zone_name: str, camera_zone: SetupCameraSchema) -> Setup:
+    async def update_camera(zone_name: str, camera_zone: SetupCameraSchema) -> Setup:
         load_setups_from_file()
-        if setup_id not in setup_storage:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Setup not found",
-            )
-
-        setup = setup_storage[setup_id]
+        setup = setup_storage
 
         # Check if the camera exists in the setup
-        existing_camera = next((c for c in setup.camera_zones if c.zone_name == zone_name), None)
+        existing_camera = next((c for c in setup['camera_zones'] if c['zone_name'] == zone_name), None)
         if not existing_camera:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Camera zone not found in the setup",
             )
+        existing_camera = camera_zone.dict()
         print(existing_camera)
         print(camera_zone)
-        existing_camera = camera_zone
-        for i, c in enumerate(setup_storage[setup_id].camera_zones):
-            if c.zone_name == zone_name:
-                setup_storage[setup_id].camera_zones[i] = existing_camera
+        for i, c in enumerate(setup_storage['camera_zones']):
+            if c['zone_name'] == zone_name:
+                setup_storage['camera_zones'][i] = existing_camera
         
         save_setups_to_file(setup_storage)
         return setup
     
     @staticmethod
-    async def delete_camera(setup_id: UUID, zone_name: str) -> Setup:
+    async def delete_camera(zone_name: str) -> Setup:
         load_setups_from_file()
-        if setup_id not in setup_storage:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Setup not found",
-            )
-
-        setup = setup_storage[setup_id]
+        setup = setup_storage
 
         # Check if the camera exists in the setup
-        existing_camera = next((c for c in setup.camera_zones if c.zone_name == zone_name), None)
+        existing_camera = next((c for c in setup.camera_zones if c['zone_name'] == zone_name), None)
         if not existing_camera:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Camera zone not found in the setup",
             )
 
-        setup.camera_zones = [c for c in setup.camera_zones if c.zone_name != zone_name]
+        setup.camera_zones = [c for c in setup.camera_zones if c['zone_name'] != zone_name]
         save_setups_to_file(setup_storage)
         return setup
     
@@ -182,15 +157,15 @@ class SetupService:
         
     
     @staticmethod
-    async def get_setup_by_id(setup_id: UUID) -> Setup:
+    async def get_setup() -> Setup:
         load_setups_from_file() 
-        if setup_id not in setup_storage:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Setup not found",
-            )
-
-        return setup_storage[setup_id]
+        # if setup_id not in setup_storage:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_404_NOT_FOUND,
+        #         detail="Setup not found",
+        #    
+        print(setup_storage)
+        return setup_storage
     
     @staticmethod
     async def list_setups() -> List[Setup]:
