@@ -24,6 +24,7 @@ class Setup(Document):
     phone_number: str = Field(..., index=True, unique=True)
     address: str
     brand_logo: str
+    description: str
     camera_zones: List[SetupCamera] # Initialize as an empty list
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

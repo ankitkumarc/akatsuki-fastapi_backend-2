@@ -1,3 +1,26 @@
 {
-  "3fa85f64-5717-4562-b3fc-2c963f66afa6": "id=None revision_id=None setup_id=UUID('3fa85f64-5717-4562-b3fc-2c963f66afa6') shop_name='string' shop_manager_name='string' coorporate_email='string' phone_number='string' address='string' brand_logo='string' camera_zones=[] created_at=datetime.datetime(2023, 11, 18, 17, 10, 56, 435000, tzinfo=TzInfo(UTC)) updated_at=datetime.datetime(2023, 11, 18, 17, 10, 56, 435000, tzinfo=TzInfo(UTC))"
+  "setup_id": "a3bc5382-33b7-4ee5-af0b-91c8a0ced9c4",
+  "shop_name": "Danbro",
+  "shop_manager_name": "Milan Kumar Gupta",
+  "coorporate_email": "milangupta95@gmail.com",
+  "phone_number": "9140076991",
+  "address": "Jankipuram",
+  "brand_logo": "Image_url",
+  "description": "Here is Description",
+  "camera_zones": [
+    {
+      "zone_name": "Skincare",
+      "zone_image": "https://agelessglowskin.com/wp-content/uploads/2021/09/Skincare-Marketing-Terms.jpg",
+      "camera_id": "192.168.0.1",
+      "camera_type": "product"
+    },
+    {
+      "zone_name": "Clothing",
+      "zone_image": "https://media.istockphoto.com/id/901863672/photo/clothes-shop-interior.jpg?s=612x612&w=0&k=20&c=2Xv0bb-igj9sqzsZQgrnBAV3uxPTXmUpZ69MbiCYStY=",
+      "camera_id": "192.168.0.2",
+      "camera_type": "product"
+    }
+  ],
+  "created_at": "2023-11-19 22:18:07.478228",
+  "updated_at": "2023-11-19 22:18:07.478238"
 }

@@ -9,8 +9,9 @@ from app.core.config import settings
 from app.api.api_v1.router import router 
 from app.models.purchase_model import Purchase
 from app.models.setup_model import Setup
-
-
+from fastapi.staticfiles import StaticFiles
+from fastapi import HTTPException
+from starlette.exceptions import HTTPException as StarletteHTTPException
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
@@ -42,5 +43,4 @@ async def app_init():
         ]
     )
 
-
-app.include_router(router, prefix=settings.API_V1_STR)
+app.include_router(router=router,prefix="/api/v1")
