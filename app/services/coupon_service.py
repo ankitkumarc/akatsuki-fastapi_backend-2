@@ -17,8 +17,8 @@ class CouponService:
           eligible_coupons = [coupon for coupon in coupons if (coupon.visit_frequency <= customer.visit_frequency) and (coupon.min_purchase_val <= customer.total_bill_amount)]
           if eligible_coupons:
              return eligible_coupons
-        
-          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coupon not found")
+          else:
+              return []
 
         
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")

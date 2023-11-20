@@ -32,7 +32,6 @@ class PurchaseService:
             return total_purchase_by_month
 
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Purchases not found for the given customer {customer_id} and year {year}")
-    
     @staticmethod
     async def list_purchases_by_month(customer_id: UUID, month: int) -> List[Purchase]:
         purchases = await Purchase.find(Purchase.customer_id == customer_id).to_list()
@@ -41,7 +40,6 @@ class PurchaseService:
             if purchase.customer_id == customer_id and purchase.created_at.month == month
         ]
         return filtered_purchases
-    
     @staticmethod
     async def create_purchase( data: PurchaseCreate) -> Purchase:
         purchase = Purchase(**data.dict())

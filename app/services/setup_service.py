@@ -50,11 +50,11 @@ class SetupService:
     @staticmethod
     async def get_cameras() -> List[SetupCameraSchema]:
         load_setups_from_file()
-        # if setup_id not in setup_storage:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_404_NOT_FOUND,
-        #         detail="Setup not found",
-        #     )
+        if not setup_storage:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Setup not found",
+            )
         setup = setup_storage
         return setup['camera_zones']
 
@@ -69,11 +69,11 @@ class SetupService:
     @staticmethod
     async def create_camera(camera_zone: SetupCameraSchema) -> Setup:
         load_setups_from_file()
-        # if setup_id not in setup_storage:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_404_NOT_FOUND,
-        #         detail="Setup not found",
-        #     )
+        if not setup_storage:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Setup not found",
+            )
 
         setup = setup_storage
 
@@ -159,11 +159,11 @@ class SetupService:
     @staticmethod
     async def get_setup() -> Setup:
         load_setups_from_file() 
-        # if setup_id not in setup_storage:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_404_NOT_FOUND,
-        #         detail="Setup not found",
-        #    
+        if not setup_storage:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Setup not found",
+            )
         print(setup_storage)
         return setup_storage
     
