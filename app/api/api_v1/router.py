@@ -5,12 +5,14 @@ from app.api.api_v1.handlers import customer
 from app.api.api_v1.handlers import coupon
 from app.api.api_v1.handlers import purchase
 from app.api.api_v1.handlers import setup
+from app.api.api_v1.handlers import ml
 router = APIRouter()
 
 
-router.include_router(user.user_router, tags=["user"]) 
+# router.include_router(user.user_router, tags=["user"]) 
 router.include_router(auth_router, tags=["auth"])
 router.include_router(customer.customer_router, prefix='/customer',tags=["customer"]) 
 router.include_router(coupon.coupon_router, prefix='/coupon',tags=["coupon"]) 
 router.include_router(purchase.purchase_router, prefix='/purchase',tags=["purchase"])
-router.include_router(setup.setup_router, prefix='/setup',tags=["setup"])
+router.include_router(setup.setup_router, prefix='/setup',tags=["setups"])
+router.include_router(ml.ml_router, prefix='/ml',tags=["video_processing"])

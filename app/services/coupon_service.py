@@ -10,15 +10,23 @@ from app.schemas.coupon_schema import CouponCreate, CouponUpdate
 
 class CouponService:
     @staticmethod
-    async def list_coupons(customer_id: UUID) -> List[Coupon]:
+    async def list_valid_coupons(customer_id: UUID) -> List[Coupon]:
         customer = await Customer.find_one(Customer.customer_id == customer_id)
-        if customer:
-            coupons =  await Coupon.find((Coupon.visit_frequency <= customer.vist_frequency) & (customer.total_bill_amount>=Coupon.min_purchase_val)).to_list()
-            if coupons:
-                return coupons
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coupon not found")
+        if customer: 
+          coupons = await Coupon.find_all().to_list()
+          eligible_coupons = [coupon for coupon in coupons if (coupon.visit_frequency <= customer.visit_frequency) and (coupon.min_purchase_val <= customer.total_bill_amount)]
+          if eligible_coupons:
+             return eligible_coupons
+          else:
+              return []
+
         
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
+     
+    @staticmethod
+    async def list_coupons()->List[Coupon]:
+        coupons = await Coupon.find_all().to_list()
+        return coupons
 
     @staticmethod
     async def create_coupon(data: CouponCreate) -> Coupon:
